@@ -65,17 +65,25 @@ function lovr.draw()
     lovr.graphics.setColor(1.0, 1.0, 1.0, 1.0)
 	
     -- model , normal shader
-    lovr.graphics.setShader(defaultShader)
+    gfx.setShader(defaultShader)
+    
+    gfx.push()
+
+    local sx, sy, sz = 1, 1, 1
+    gfx.transform(0, -2, 0, sx, sy, sz, 0, 0, 1, 0) -- "player perspective"
     for i=1,#globals.drawables do 
         globals.drawables[i]:draw() -- global class constructor draw override test go!
     end
-
+    
+    gfx.pop() -- return to default transform (headset@origin)
     -- ui, special shader
     lovr.graphics.setShader() -- Reset to default/unlit
+    
     lovr.graphics.setColor(1, 1, 1, 1)
     lovr.graphics.print('hello world', 0, 2, -3, .5)
     lovr.graphics.print('Frame delta ' .. fRenderDelta .. 'ms', 0, 1, -3, 0.2)
     lovr.graphics.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
+    
     iTotalFrames = iTotalFrames + 1
 end
 

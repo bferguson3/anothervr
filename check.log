@@ -46,8 +46,11 @@ Checking app/lib.lua                              [0m[31m[1m7 warnings[0m
     app/lib.lua:20:1: mutating non-standard global variable [0m[1manotherdebug[0m
     app/lib.lua:25:1: mutating non-standard global variable [0m[1manotherdebug[0m
 
-Checking app/main.lua                             [0m[31m[1m1 warning[0m
+Checking app/main.lua                             [0m[31m[1m4 warnings[0m
 
     app/main.lua:28:20: unused argument [0m[1margs[0m
+    app/main.lua:70:11: unused variable [0m[1msx[0m
+    app/main.lua:70:15: unused variable [0m[1msy[0m
+    app/main.lua:70:19: unused variable [0m[1msz[0m
 
-Total: [0m[31m[1m34[0m warnings / [0m[0m[1m0[0m errors in 6 files
+Total: [0m[31m[1m37[0m warnings / [0m[0m[1m0[0m errors in 6 files
