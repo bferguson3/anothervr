@@ -3,23 +3,27 @@
 -- Every file that needs access to the global variables file
 --  simply needs to require 'globals'. the 'drawables' array
 --  is included here.
-require 'globals'
+local globals = require 'globals'
 
-fRenderDelta = 0.0
-
+local lovr = require 'lovr' 
+local fRenderDelta = 0.0
+local iTotalFrames = 0
 -- Currently the skybox renders at the same color as ambience.
-ambientLight = { 0.3, 0.3, 0.3, 1.0 }
+local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
 -- My personal library:
-m = lovr.filesystem.load('lib.lua'); m()
+local m = lovr.filesystem.load('lib.lua'); m()
 
 -- Abbreviations
-fs = lovr.filesystem
-gfx = lovr.graphics
+local fs = lovr.filesystem
+local gfx = lovr.graphics
 
 -- Include the class files
-require 'GameObject'
-require 'Player'
+--local go = require 'GameObject'
+local Player = require 'Player'
+
+local defaultVertex, defaultFragment, defaultShader
+local p 
 
 function lovr.load(args)
 
@@ -46,24 +50,24 @@ function lovr.update(dT)
 
     -- Adjust head position (for specular)
     if lovr.headset then 
-        hx, hy, hz = lovr.headset.getPosition()
+        local hx, hy, hz = lovr.headset.getPosition()
         defaultShader:send('viewPos', { hx, hy, hz } )
     end
 
+    lovr.filesystem.append('log.txt', 'F[' .. iTotalFrames .. ']: ' .. 'HEE' .. '\n')
     fRenderDelta = math.floor(dT * 1000) -- in ms instead of us
 end
 
 function lovr.draw()
-	-- skybox
-	lovr.graphics.setColor(0.3, 0.3, 0.3, 1.0)
-	lovr.graphics.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
-	lovr.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+    -- skybox
+    lovr.graphics.setColor(0.3, 0.3, 0.3, 1.0)
+    lovr.graphics.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
+    lovr.graphics.setColor(1.0, 1.0, 1.0, 1.0)
 	
-	-- model , normal shader
-	lovr.graphics.setShader(defaultShader)
-    local i 
-    for i=1,#drawables do 
-        drawables[i]:draw() -- global class constructor draw override test go!
+    -- model , normal shader
+    lovr.graphics.setShader(defaultShader)
+    for i=1,#globals.drawables do 
+        globals.drawables[i]:draw() -- global class constructor draw override test go!
     end
 
     -- ui, special shader
@@ -71,7 +75,8 @@ function lovr.draw()
     lovr.graphics.setColor(1, 1, 1, 1)
     lovr.graphics.print('hello world', 0, 2, -3, .5)
     lovr.graphics.print('Frame delta ' .. fRenderDelta .. 'ms', 0, 1, -3, 0.2)
-    lovr.graphics.print("size of drawables: " .. #drawables, 0, 0, -3, 0.4)
+    lovr.graphics.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
+    iTotalFrames = iTotalFrames + 1
 end
 
 function lovr.quit()

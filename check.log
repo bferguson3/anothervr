@@ -1,0 +1,53 @@
+Checking app/GameObject.lua                       [0m[31m[1m11 warnings[0m
+
+    app/GameObject.lua:5:1: setting non-standard global variable [0m[1mGameObject[0m
+    app/GameObject.lua:11:2: value assigned to field [0m[1max[0m is overwritten on line 13 before use
+    app/GameObject.lua:15:1: setting non-standard global variable [0m[1mGameObject_mt[0m
+    app/GameObject.lua:15:29: accessing undefined variable [0m[1mGameObject[0m
+    app/GameObject.lua:17:10: mutating non-standard global variable [0m[1mGameObject[0m
+    app/GameObject.lua:17:20: unused argument [0m[1mself[0m
+    app/GameObject.lua:31:23: accessing undefined variable [0m[1mGameObject_mt[0m
+    app/GameObject.lua:36:10: mutating non-standard global variable [0m[1mGameObject[0m
+    app/GameObject.lua:38:16: accessing undefined variable [0m[1mlovr[0m
+    app/GameObject.lua:44:10: mutating non-standard global variable [0m[1mGameObject[0m
+    app/GameObject.lua:54:8: accessing undefined variable [0m[1mGameObject[0m
+
+Checking app/Player.lua                           [0m[31m[1m11 warnings[0m
+
+    app/Player.lua:7:1: setting non-standard global variable [0m[1mPlayer[0m
+    app/Player.lua:7:10: accessing undefined variable [0m[1mGameObject[0m
+    app/Player.lua:8:1: mutating non-standard global variable [0m[1mPlayer[0m
+    app/Player.lua:9:1: setting non-standard global variable [0m[1mPlayer_mt[0m
+    app/Player.lua:9:25: accessing undefined variable [0m[1mPlayer[0m
+    app/Player.lua:12:10: mutating non-standard global variable [0m[1mPlayer[0m
+    app/Player.lua:23:10: mutating non-standard global variable [0m[1mPlayer[0m
+    app/Player.lua:23:16: unused argument [0m[1mself[0m
+    app/Player.lua:24:14: accessing undefined variable [0m[1mGameObject[0m
+    app/Player.lua:25:20: accessing undefined variable [0m[1mPlayer_mt[0m
+    app/Player.lua:29:8: accessing undefined variable [0m[1mPlayer[0m
+
+Checking app/conf.lua                             [0m[31m[1m1 warning[0m
+
+    app/conf.lua:1:10: mutating non-standard global variable [0m[1mlovr[0m
+
+Checking app/globals.lua                          [0m[31m[1m3 warnings[0m
+
+    app/globals.lua:2:1: setting non-standard global variable [0m[1mglobals[0m
+    app/globals.lua:4:1: mutating non-standard global variable [0m[1mglobals[0m
+    app/globals.lua:6:8: accessing undefined variable [0m[1mglobals[0m
+
+Checking app/lib.lua                              [0m[31m[1m7 warnings[0m
+
+    app/lib.lua:2:10: setting non-standard global variable [0m[1mround[0m
+    app/lib.lua:7:10: setting non-standard global variable [0m[1minclude[0m
+    app/lib.lua:8:15: accessing undefined variable [0m[1mlovr[0m
+    app/lib.lua:13:23: trailing whitespace in a comment
+    app/lib.lua:14:1: setting non-standard global variable [0m[1manotherdebug[0m
+    app/lib.lua:20:1: mutating non-standard global variable [0m[1manotherdebug[0m
+    app/lib.lua:25:1: mutating non-standard global variable [0m[1manotherdebug[0m
+
+Checking app/main.lua                             [0m[31m[1m1 warning[0m
+
+    app/main.lua:28:20: unused argument [0m[1margs[0m
+
+Total: [0m[31m[1m34[0m warnings / [0m[0m[1m0[0m errors in 6 files

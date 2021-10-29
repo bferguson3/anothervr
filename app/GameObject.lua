@@ -1,5 +1,5 @@
 --gameObject.lua
-require 'globals' -- so we have 'drawables'
+local globals = require 'globals' -- so we have 'drawables'
 
 -- slightly different constructor than Model:draw()
 GameObject = { 
@@ -36,7 +36,7 @@ end
 function GameObject:init()
 	if(self.modelfile) then 
 		self.model = lovr.graphics.newModel(self.modelfile)
-		table.insert(drawables, self)
+		table.insert(globals.drawables, self)
 	end
 end
 
