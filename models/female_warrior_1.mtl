@@ -1,0 +1,98 @@
+# Blender MTL File: 'None'
+# Material Count: 8
+
+newmtl Eye_brown
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd brown_eye.png
+map_d brown_eye.png
+
+newmtl bodyMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 1
+map_Kd eyelashes01.png
+map_d eyelashes01.png
+
+newmtl eyebrow003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 1
+map_Kd eyebrow003.png
+map_d eyebrow003.png
+
+newmtl leather_armor
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd leather_armor_diffuse.png
+map_d leather_armor_diffuse.png
+
+newmtl materialMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.355500 0.192800
+Ks 0.660533 0.660533 0.660533
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd Corinthian_helmet_DIF.png
+map_d Corinthian_helmet_DIF.png
+
+newmtl middleage_caucasian_female
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.054903 0.054903 0.054903
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd middleage_lightskinned_female_diffuse.png
+map_d middleage_lightskinned_female_diffuse.png
+
+newmtl motorcyclepants
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.203900 0.203900 0.203900
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd motorcyclepants.png
+map_d motorcyclepants.png
+
+newmtl vader_bootMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.800000 0.800000 0.800000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.000000
+illum 9
+map_Kd Vader_Helmet_d.png
+map_d Vader_Helmet_d.png
