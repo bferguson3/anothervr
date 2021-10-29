@@ -19,9 +19,9 @@ gfx = lovr.graphics
 
 -- Include the class files
 require 'GameObject'
+require 'Player'
 
 function lovr.load(args)
-    --anotherdebug:init()
 
     -- set up shader
     defaultVertex = fs.read('shaders/defaultVertex.vs')
@@ -36,8 +36,8 @@ function lovr.load(args)
     defaultShader:send('metallic', 32.0)
 
     --Try out our GameObject class!
-    p = GameObject:new(0, 0, -3, 'models/female_warrior_1.obj')
-    p:init() -- <- actually loads the model
+    p = Player:new(0, 0, -3, 'models/female_warrior_1.obj')
+    p:init() -- <- actually loads the model to drawables array
 end
 
 function lovr.update(dT)
