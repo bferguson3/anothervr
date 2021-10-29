@@ -6,10 +6,6 @@
 local globals = require 'globals'
 
 local lovr = require 'lovr' 
-local fRenderDelta = 0.0
-local iTotalFrames = 0
--- Currently the skybox renders at the same color as ambience.
-local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
 -- My personal library:
 local m = lovr.filesystem.load('lib.lua'); m()
@@ -24,6 +20,17 @@ local Player = require 'Player'
 
 local defaultVertex, defaultFragment, defaultShader
 local p 
+
+-- FPS/CPU% counter variables
+local fRenderDelta = 0.0
+local iTotalFrames = 0
+local frameCounter = 0.0
+local updateCpuCtr = false 
+local fpsrough = 0.0
+local FRAMERATE = 72
+
+-- Currently the skybox renders at the same color as ambience.
+local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
 function lovr.load(args)
 
@@ -44,7 +51,16 @@ function lovr.load(args)
     p:init() -- <- actually loads the model to drawables array
 end
 
+
 function lovr.update(dT)
+    -- framerate nonsense
+    frameCounter = frameCounter + 1
+    if(frameCounter > FRAMERATE) then 
+        updateCpuCtr = true 
+        frameCounter = 0
+        fRenderDelta = lovr.timer.getTime()
+    end
+
     -- Light position updates
     defaultShader:send('lightPos', { 0.0, 2.0, -3.0 })
 
@@ -54,15 +70,14 @@ function lovr.update(dT)
         defaultShader:send('viewPos', { hx, hy, hz } )
     end
 
-    lovr.filesystem.append('log.txt', 'F[' .. iTotalFrames .. ']: ' .. 'HEE' .. '\n')
-    fRenderDelta = math.floor(dT * 1000) -- in ms instead of us
+    --fs.append('log.txt', 'T[' .. lovr.timer.getTime() .. ']: ' .. 'HEE' .. '\n')
 end
 
 function lovr.draw()
     -- skybox
-    lovr.graphics.setColor(0.3, 0.3, 0.3, 1.0)
-    lovr.graphics.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
-    lovr.graphics.setColor(1.0, 1.0, 1.0, 1.0)
+    gfx.setColor(0.3, 0.3, 0.3, 1.0)
+    gfx.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
+    gfx.setColor(1.0, 1.0, 1.0, 1.0)
 	
     -- model , normal shader
     gfx.setShader(defaultShader)
@@ -77,14 +92,18 @@ function lovr.draw()
     
     gfx.pop() -- return to default transform (headset@origin)
     -- ui, special shader
-    lovr.graphics.setShader() -- Reset to default/unlit
+    gfx.setShader() -- Reset to default/unlit
     
-    lovr.graphics.setColor(1, 1, 1, 1)
-    lovr.graphics.print('hello world', 0, 2, -3, .5)
-    lovr.graphics.print('Frame delta ' .. fRenderDelta .. 'ms', 0, 1, -3, 0.2)
-    lovr.graphics.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
-    
+    gfx.setColor(1, 1, 1, 1)
+    gfx.print('hello world', 0, 2, -3, .5)
+    gfx.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
     iTotalFrames = iTotalFrames + 1
+    gfx.print('GPU FPS: ' .. lovr.timer.getFPS(), 0, 0.5, -3, 0.2)
+    gfx.print('CPU %: ' .. fpsrough, 0, 1, -3, 0.2)
+    if(updateCpuCtr) then 
+        updateCpuCtr = false
+        fpsrough = round((lovr.timer.getTime() - fRenderDelta) * 100, 2)
+    end
 end
 
 function lovr.quit()
