@@ -1,3 +1,5 @@
+local lovr = require 'lovr'
+
 function lovr.conf(t)
 
   -- Set the project version and identity

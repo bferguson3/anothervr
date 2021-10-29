@@ -1,5 +1,5 @@
 --globals.lua
-globals = {}
+local globals = {}
 -- Store everything we are currently drawing here:
 globals.drawables = {}
 

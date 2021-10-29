@@ -1,12 +1,12 @@
 --Player.lua
 -- Subclass of GameObject
-require 'GameObject'
+local GameObject = require 'GameObject'
 
 -- Create a metatable that contains an instance of the GO
 --  (and anything else we may need)
-Player = GameObject:new()
+local Player = GameObject:new()
 Player.name = "Nanashi"
-Player_mt = { __index = Player }
+local Player_mt = { __index = Player }
 
 -- Create a draw override to prove class inheritence
 function Player:draw()

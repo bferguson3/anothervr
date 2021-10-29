@@ -1,8 +1,9 @@
 --gameObject.lua
 local globals = require 'globals' -- so we have 'drawables'
+local lovr = require 'lovr'
 
 -- slightly different constructor than Model:draw()
-GameObject = { 
+local GameObject = { 
 	x = 0, 
 	y = 0, 
 	z = 0, 
@@ -12,7 +13,7 @@ GameObject = {
 	ay = 1, 
 	az = 0
 }
-GameObject_mt = { __index = GameObject } -- metatable is important!!
+local GameObject_mt = { __index = GameObject } -- metatable is important!!
 
 function GameObject:new(x, y, z, modelfile, r, ax, ay, az)
 	-- here we go through the ordinary constructor code
