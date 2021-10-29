@@ -1,4 +1,4 @@
-IGNORED_WARNINGS:=611 612
+IGNORED_WARNINGS:=611 612 614
 
 default: check
 check:
