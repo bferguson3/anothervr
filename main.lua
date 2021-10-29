@@ -11,7 +11,7 @@ m = lovr.filesystem.load('lib.lua'); m()
 
 fs = lovr.filesystem
 gfx = lovr.graphics
-
+player = require 'player'
 
 function lovr.load(args)
     --anotherdebug:init()
@@ -28,8 +28,8 @@ function lovr.load(args)
     defaultShader:send('specularStrength', 0.5)
     defaultShader:send('metallic', 32.0)
 
-    mod = lovr.graphics.newModel('models/female_warrior_1.obj')
-    
+    --mod = lovr.graphics.newModel('models/female_warrior_1.obj')
+    player:init()
 end
 
 function lovr.update(dT)
@@ -53,7 +53,7 @@ function lovr.draw()
 	
 	-- model , normal shader
 	lovr.graphics.setShader(defaultShader)
-    mod:draw(0, 0, -2, 1)
+    player:draw()
 
     -- ui, special shader
     lovr.graphics.setShader() -- Reset to default/unlit

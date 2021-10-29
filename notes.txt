@@ -1,0 +1,71 @@
+everyone takes up one square on a grid. 
+  you can only play one HERO at a time.
+  OR: teleport between hero 'minds'. not sure how good that will work
+
+defend only requires holding the defensive item against the attack spot.
+it reduces the incoming attack damage by a certain amount.
+magic can only be defended by a book.
+
+parry requires a swing motion against the incoming attack 'spot'. 
+it will return a certain amount of damage to the attacker, but if you fail
+you take full damage.
+magic can only be parried by staff.
+
+COLLISION FOR PARRY:
+timestamp 0: get xyz of wrist and of tip of weapon.
+timestamp 1: get xyz of wrist and tip of weapon, and form a polygon.
+ does this polygon intersect with the trigger spot?
+if no, use the next ts's position as ts1, and this ts's as ts0,
+ continue...
+
+models are like pools of radiance models, or demeo, or tabletop tales. Static 
+3d models on 'discs'. 
+
+encounters could be different map or same...
+
+WEAPON:
+DAGGER:
+ Increases parry window, double parry damage (slash)
+SWORD:
+ Highest single damage (slash)
+SPEAR:
+ 2x tile range, no shield, wide parry window
+BOW:
+ Range but no parry (pull and release action)
+STAFF:
+ Can parry magic, weak ranged magic attack (trigger)
+
+ACC:
+SHIELD:
+ 50% from physical attacks
+BOOK:
+ 50% from magical attacks, allows casting spells in battle
+
+* RANGED attacks can be physically dodged. this is because trajectory can be calculated. 
+  MELEE attacks cannot. There's no animation to dodge. 
+
+
+Everyone starts at:
+10 STR  10 VIT  10 DEX  10 WIS
+and increases based on skills used. high level weapons require stats.
+temp: ATTACK and PARRY raise stats the same amount.
+
+        STR per Atk/Pry    VIT per Dmg taken   DEX per Atk/Pry  WIS per M Atk 
+Dagger    0.02                   0.1               0.05
+Sword     0.04				           0.03
+Spear     0.03                                     0.04
+Bow       0.03                                     0.03
+Staff     0.01                                     0.02              0.03
+                                              (Tool: 0.1)
+Shield     0.01
+Book                                                           0.01 for def, 0.05 for casting
+
+STR - physical damage
+VIT - hp and physical resist
+DEX - crit rate and hit rate
+WIS - mag damage
+
+(note only way to mitigate magic damage is thru magic or useing a book)
+
+https://docs.google.com/spreadsheets/d/1F5345yhs4aoUs7O39izqF6fPCm3jUOswuYlImNFhoYE/edit#gid=0
+
