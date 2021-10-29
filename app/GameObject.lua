@@ -10,7 +10,7 @@ GameObject = {
 	r = 0,
 	ax = 0,
 	ay = 1, 
-	ax = 0
+	az = 0
 }
 GameObject_mt = { __index = GameObject } -- metatable is important!!
 
