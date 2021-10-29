@@ -27,7 +27,7 @@ function lovr.conf(t)
   t.graphics.debug = false
 
   -- Headset settings
-  t.headset.drivers = { 'openxr', 'oculus', 'vrapi', 'pico', 'openvr', 'webxr', 'desktop' }
+  t.headset.drivers = { 'openxr' }--, 'oculus', 'vrapi', 'pico', 'openvr', 'webxr', 'desktop' }
   t.headset.supersample = false
   t.headset.offset = 1.7
   t.headset.msaa = 4
