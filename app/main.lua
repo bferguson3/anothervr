@@ -6,20 +6,23 @@
 local globals = require 'globals'
 
 local lovr = require 'lovr' 
-
--- My personal library:
-local m = lovr.filesystem.load('lib.lua'); m()
-
 -- Abbreviations
 local fs = lovr.filesystem
 local gfx = lovr.graphics
+-- My personal library:
+local m = lovr.filesystem.load('lib.lua'); m()
 
 -- Include the class files
 --local go = require 'GameObject'
 local Player = require 'Player'
+local p 
+
+local Map = require 'Map'
+local map1 
 
 local defaultVertex, defaultFragment, defaultShader
-local p 
+-- Currently the skybox renders at the same color as ambience.
+local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
 -- FPS/CPU% counter variables
 local fRenderDelta = 0.0
@@ -29,10 +32,9 @@ local updateCpuCtr = false
 local fpsrough = 0.0
 local FRAMERATE = 72
 
--- Currently the skybox renders at the same color as ambience.
-local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
 function lovr.load(args)
+
 
     -- set up shader
     defaultVertex = fs.read('shaders/defaultVertex.vs')
@@ -49,6 +51,7 @@ function lovr.load(args)
     --Try out our GameObject class!
     p = Player:new(0, 0, -3, 'models/female_warrior_1.obj')
     p:init() -- <- actually loads the model to drawables array
+    map1 = Map:new('maps/map1_0.csv')
 end
 
 
@@ -95,7 +98,8 @@ function lovr.draw()
     gfx.setShader() -- Reset to default/unlit
     
     gfx.setColor(1, 1, 1, 1)
-    gfx.print('hello world', 0, 2, -3, .5)
+    --gfx.print('hello world', 0, 2, -3, .5)
+    gfx.print('map1 is ' .. #map1.tiles .. 'tiles large!', 0, 2, -3, .5)
     gfx.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
     iTotalFrames = iTotalFrames + 1
     gfx.print('GPU FPS: ' .. lovr.timer.getFPS(), 0, 0.5, -3, 0.2)
