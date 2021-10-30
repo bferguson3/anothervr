@@ -3,7 +3,6 @@
 --local _MAPHEIGHT = 20
 
 local lovr = require 'lovr'
-local globals = require 'globals'
 local fs = lovr.filesystem 
 local Tile = require 'Tile'
 

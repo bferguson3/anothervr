@@ -1,6 +1,7 @@
 --gameObject.lua
 local globals = require 'globals' -- so we have 'drawables'
 local lovr = require 'lovr'
+local gfx = lovr.graphics 
 
 -- slightly different constructor than Model:draw()
 local GameObject = { 
@@ -11,7 +12,9 @@ local GameObject = {
 	r = 0,
 	ax = 0,
 	ay = 1, 
-	az = 0
+	az = 0,
+	shader = globals.shaders.default,
+	scale = 1.0
 }
 local GameObject_mt = { __index = GameObject } -- metatable is important!!
 
@@ -26,6 +29,8 @@ function GameObject:new(x, y, z, modelfile, r, ax, ay, az)
 	new_go.ay = ay or 1
 	new_go.az = az or 0 
 	new_go.r = r or 0 
+	new_go.shader = globals.shaders.default
+	new_go.scale = 1.0
 	
 	new_go.modelfile = modelfile or nil 
 	-- then set our metatable
@@ -43,10 +48,12 @@ end
 
 -- Should need no arguments
 function GameObject:draw()
-	local scale = 1.0
+	if(self.shader ~= lovr.graphics.getShader()) then 
+		gfx.setShader(self.shader)
+	end
 	if(self.model ~= nil) then 
 		self.model:draw(self.x, self.y, self.z, 
-			            scale, 
+			            self.scale, 
 			            self.r, 
 			            self.ax, self.ay, self.az);
 	end

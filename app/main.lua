@@ -22,7 +22,9 @@ local Map = require 'Map'
 local map1 
 
 local defaultVertex, defaultFragment, defaultShader
-local blockShader, blockmodel
+local tileShader, blockmodel
+local floor_transform_block, wall_transform_block, ceiling_transform_block
+local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
 -- Currently the skybox renders at the same color as ambience.
 local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
 
@@ -33,24 +35,71 @@ local frameCounter = 0.0
 local fRenderDelta = 0.0
 -- Consts
 local WHITE = { 1.0, 1.0, 1.0, 1.0 }
+local DARKGREY = {0.33, 0.33, 0.33, 1.0}
 local FRAMERATE = 72
 
-function lovr.load(args)
-
-    -- set up shader
+local function initialize_shaders()
+    -- set up shaders
     defaultVertex = fs.read('shaders/defaultVertex.vs')
     defaultFragment = fs.read('shaders/defaultFragment.fs')
     defaultShader = gfx.newShader(defaultVertex, defaultFragment, {})
-    
+    globals.shaders.default = defaultShader 
     -- Set default shader values
     defaultShader:send('liteColor', {1.0, 1.0, 1.0, 1.0})
     defaultShader:send('ambience', ambientLight)
     defaultShader:send('specularStrength', 0.5)
     defaultShader:send('metallic', 32.0)
 
+    -- Make a list of all tile transforms:
+    tile_floor_loc = {}
+    tile_wall_loc = {}
+    tile_ceiling_loc = {}
+    for y=1,20 do 
+        for x = 1,20 do 
+            local position = m.vec3((x - 11)*4, 2, (y - 11)*4)
+            local pos2 = m.vec3((x - 11)*4, -2, (y - 11)*4)
+            local pos3 = m.vec3((x - 11)*4, 6, (y - 11)*4)
+            local orientation = m.quat(0, 0, 1, 0)
+            local scale = m.vec3(1) -- change to 2.0 later
+            -- note 'newMat4' instead of 'mat4' to store it for later.
+            tile_floor_loc[((y-1)*20) + x] = m.newMat4(pos2, scale, orientation)
+            tile_wall_loc[((y-1)*20) + x] = m.newMat4(position, scale, orientation)
+            tile_ceiling_loc[((y-1)*20) + x] = m.newMat4(pos3, scale, orientation)
+        end
+    end
+    
+    -- Make a shader block for the transforms and push the array:
+    floor_transform_block = gfx.newShaderBlock('uniform', 
+        { tileLocs = { 'mat4', 20*20 } }, 
+        { usage = 'static' })
+    floor_transform_block:send('tileLocs', tile_floor_loc)
+    
+    wall_transform_block = gfx.newShaderBlock('uniform', 
+    { tileLocs = { 'mat4', 20*20 } }, 
+    { usage = 'static' })
+    wall_transform_block:send('tileLocs', tile_wall_loc)
+    
+    ceiling_transform_block = gfx.newShaderBlock('uniform', 
+    { tileLocs = { 'mat4', 20*20 } }, 
+    { usage = 'static' })
+    ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
+
+    -- Make a new shader with a defined block space, and push the block to shader
+    tileShader = gfx.newShader(
+        floor_transform_block:getShaderCode('TileTransforms') .. 
+        fs.read('shaders/tileVertex.vs'), 
+        fs.read('shaders/tileFragment.fs'));
+    globals.shaders.tile = tileShader 
+--
+end
+
+function lovr.load(args)
+
+    initialize_shaders()
+
     gfx.setCullingEnabled(true)
     gfx.setBlendMode(nil)
-    lovr.headset.setClipDistance(0.1, 20)
+    lovr.headset.setClipDistance(0.1, 50)
 
     --Try out our GameObject class!
     p = Player:new(0, 0, -3, 'models/female_warrior_1.obj')
@@ -58,36 +107,9 @@ function lovr.load(args)
 
     map1 = Map:new('maps/map1_0.csv')
     map1:init() -- < loads map and override to drawables
-    -- shader block of dynamic transforms
--- MOVE ME TO MAP INIT:
-    local blocktest = gfx.newShaderBlock('uniform', 
-        { modelTransforms = { 'mat4', 20*20 } }, 
-        { usage = 'static' })
-    local transforms = {}
-    for y=1,20 do 
-        for x = 1,20 do 
-            local position = m:vec3((x - 11)*4, -2, (y - 11)*4)
-            local orientation = m:quat(0, 0, 1, 0)
-            local scale = m:vec3(1) -- change to 2.0
-            transforms[((y-1)*20) + x] = m:mat4(position, scale, orientation)
-        end
-    end
-    blocktest:send('modelTransforms', transforms)
-    blockShader = gfx.newShader(blocktest:getShaderCode('ModelBlock') .. [[
-        out vec3 vNormal;
-        vec4 position(mat4 projection, mat4 transform, vec4 vertex) {
-            vNormal = lovrNormal;
-            return projection * transform * modelTransforms[lovrInstanceID] * vertex;
-        }
-    ]], [[
-        in vec3 vNormal;
-        vec4 color(vec4 graphicsColor, sampler2D image, vec2 uv) {
-            return vec4(0.5, 1.0, 1.0, 1.0);
-        }
-    ]]);
-    blockShader:sendBlock('ModelBlock', blocktest)
+
+    -- load the cube model 
     blockmodel = gfx.newModel('models/cube.obj')
---
 end
 
 function lovr.update(dT)
@@ -103,37 +125,41 @@ function lovr.update(dT)
         local hx, hy, hz = lovr.headset.getPosition()
         defaultShader:send('viewPos', { hx, hy, hz } )
     end
-
     --fs.append('log.txt', 'T[' .. lovr.timer.getTime() .. ']: ' .. 'HEE' .. '\n')
 end
 
 function lovr.draw()
     -- skybox
-    gfx.setColor(0.3, 0.3, 0.3, 1.0)
+    gfx.setColor(DARKGREY)
     gfx.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
     gfx.setColor(WHITE)
 
-    gfx.setShader(blockShader) -- includes teal color
-    blockmodel:draw(m:mat4(), 20*20) 
+    -- Draw 'TileMap'
+    gfx.setShader(tileShader) -- includes teal color
+    tileShader:sendBlock('TileTransforms', wall_transform_block)
+    blockmodel:draw(m.mat4(), 20*20)     
+    tileShader:sendBlock('TileTransforms', floor_transform_block)
+    blockmodel:draw(m.mat4(), 20*20) 
+    tileShader:sendBlock('TileTransforms', ceiling_transform_block)
+    blockmodel:draw(m.mat4(), 20*20) 
 
-    -- model , normal shader
-    gfx.setShader(defaultShader)
     gfx.push()
     local sx, sy, sz = 1, 1, 1
-    gfx.transform(0, -2, 0, sx, sy, sz, 0, 0, 1, 0) -- "player perspective"
+    gfx.transform(0, -2, 0, sx, sy, sz, 0, 0, 1, 0) -- "player perspective" test
     for i=1,#globals.drawables do 
-        globals.drawables[i]:draw() -- global class constructor draw override test go!
+        globals.drawables[i]:draw() -- global class constructor draw override
     end
     gfx.pop() -- return to default transform (headset@origin)
     
-    -- ui, special shader
-    gfx.setShader() -- Reset to default/unlit
-    gfx.setColor(1, 1, 1, 1)
+    -- ui needs special default/unlist shader
+    gfx.setShader() 
+    gfx.setColor(WHITE)
     --gfx.print('hello world', 0, 2, -3, .5)
-    iTotalFrames = iTotalFrames + 1
     gfx.print('map1 is ' .. #map1.tiles .. 'tiles large!', 0, 2, -3, .5)
     gfx.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
     gfx.print('GPU FPS: ' .. lovr.timer.getFPS(), 0, 0.5, -3, 0.2)
+
+    iTotalFrames = iTotalFrames + 1
 end
 
 function lovr.quit()
