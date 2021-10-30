@@ -21,22 +21,24 @@ local p
 local Map = require 'Map'
 local map1 
 
+-- Consts
+local WHITE = { 1.0, 1.0, 1.0, 1.0 }
+local DARKGREY = {0.33, 0.33, 0.33, 1.0}
+local FRAMERATE = 72
+
 local defaultVertex, defaultFragment, defaultShader
 local tileShader, blockmodel
 local floor_transform_block, wall_transform_block, ceiling_transform_block
 local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
 -- Currently the skybox renders at the same color as ambience.
-local ambientLight = { 0.3, 0.3, 0.3, 1.0 }
+local ambientLight = DARKGREY 
 
 -- FPS/CPU% counter variables
 local fUpdateDelta = 0.0
 local iTotalFrames = 0
 local frameCounter = 0.0
 local fRenderDelta = 0.0
--- Consts
-local WHITE = { 1.0, 1.0, 1.0, 1.0 }
-local DARKGREY = {0.33, 0.33, 0.33, 1.0}
-local FRAMERATE = 72
+
 
 local function initialize_shaders()
     -- set up shaders
@@ -75,13 +77,13 @@ local function initialize_shaders()
     floor_transform_block:send('tileLocs', tile_floor_loc)
     
     wall_transform_block = gfx.newShaderBlock('uniform', 
-    { tileLocs = { 'mat4', 20*20 } }, 
-    { usage = 'static' })
+        { tileLocs = { 'mat4', 20*20 } }, 
+        { usage = 'static' })
     wall_transform_block:send('tileLocs', tile_wall_loc)
     
     ceiling_transform_block = gfx.newShaderBlock('uniform', 
-    { tileLocs = { 'mat4', 20*20 } }, 
-    { usage = 'static' })
+        { tileLocs = { 'mat4', 20*20 } }, 
+        { usage = 'static' })
     ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
 
     -- Make a new shader with a defined block space, and push the block to shader
