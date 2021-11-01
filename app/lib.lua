@@ -12,3 +12,11 @@ function include(fileName)
     m()
 end
 
+function list_contains(lst, o)
+    for i=1,#lst do 
+        if (lst[i] == o) then 
+            return true 
+        end 
+    end 
+    return false 
+end
