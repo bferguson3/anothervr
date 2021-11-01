@@ -16,6 +16,21 @@ Map.tileGroups = {
 --end
 local map_mt = { __index = Map }
 
+--1. Split the map layer into arrays of each block TYPE. e.g. all the grass blocks (02)
+--  in one array, all the door blocks (06) in another, etc.
+    
+--2. Assign their transform locations into each of the type subsections, and label-
+--  the resultant coverall object 'tileGroup' with the 'tileId'
+
+--3. When initializing the Map, we have to also populate the mat4() transformations
+-- that we will be sending to the shader. iterate through all tileGroups and 
+-- make an additional container for the mat4s. all these blocks are the same so
+-- the order they are drawn in doesn't matter. 
+
+--4. During Map:draw() from drawables[n]:draw():
+--  iterate through tileGroups[], setting texture once, sending the block
+--  of transforms, and finally drawing with :(mat4(), #thistilegroup)
+
 
 function Map:init()
     local groups = {}
