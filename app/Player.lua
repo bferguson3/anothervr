@@ -18,7 +18,7 @@ function Player:new(x, y, z, mf, name)
 	local new = GameObject:new(x, y, z, mf)
 
 	new.name = name or "Nanashi"
-	new.scale = 2.0
+	new.scale = 1.0
 
 	setmetatable(new, Player_mt) 
 	return new 

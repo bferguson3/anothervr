@@ -58,11 +58,11 @@ local function initialize_shaders()
     tile_ceiling_loc = {}
     for y=1,20 do 
         for x = 1,20 do 
-            local position = m.vec3((x - 11)*4, 2, (y - 11)*4)
-            local pos2 = m.vec3((x - 11)*4, -2, (y - 11)*4)
-            local pos3 = m.vec3((x - 11)*4, 6, (y - 11)*4)
+            local position = m.vec3((x - 11)*3, 2, (y - 11)*3)
+            local pos2 = m.vec3((x - 11)*3, -2, (y - 11)*3)
+            local pos3 = m.vec3((x - 11)*3, 6, (y - 11)*3)
             local orientation = m.quat(0, 0, 1, 0)
-            local scale = m.vec3(1) -- change to 2.0 later
+            local scale = m.vec3(1.5) 
             -- note 'newMat4' instead of 'mat4' to store it for later.
             tile_floor_loc[((y-1)*20) + x] = m.newMat4(pos2, scale, orientation)
             tile_wall_loc[((y-1)*20) + x] = m.newMat4(position, scale, orientation)
@@ -97,6 +97,7 @@ end
 
 function lovr.load(args)
 
+    gfx.setDefaultFilter('nearest', gfx.getLimits().anisotropy)
     initialize_shaders()
 
     gfx.setCullingEnabled(true)
@@ -111,7 +112,8 @@ function lovr.load(args)
     map1:init() -- < loads map and override to drawables
 
     -- load the cube model 
-    blockmodel = gfx.newModel('models/cube.obj')
+    blockmodel = gfx.newModel('models/block_02.obj')
+    
 end
 
 function lovr.update(dT)
@@ -138,16 +140,16 @@ function lovr.draw()
 
     -- Draw 'TileMap'
     gfx.setShader(tileShader) -- includes teal color
-    tileShader:sendBlock('TileTransforms', wall_transform_block)
-    blockmodel:draw(m.mat4(), 20*20)     
+    --tileShader:sendBlock('TileTransforms', wall_transform_block)
+    --blockmodel:draw(m.mat4(), 20*20)     
     tileShader:sendBlock('TileTransforms', floor_transform_block)
+    local tex = gfx.newTexture('models/tex_02.png', { mipmaps = false })
+    globals.shaders.tile:send('lovrDiffuseTexture', tex)
     blockmodel:draw(m.mat4(), 20*20) 
-    tileShader:sendBlock('TileTransforms', ceiling_transform_block)
-    blockmodel:draw(m.mat4(), 20*20) 
+    --tileShader:sendBlock('TileTransforms', ceiling_transform_block)
+    --blockmodel:draw(m.mat4(), 20*20) 
 
     gfx.push()
-    local sx, sy, sz = 1, 1, 1
-    gfx.transform(0, -2, 0, sx, sy, sz, 0, 0, 1, 0) -- "player perspective" test
     for i=1,#globals.drawables do 
         globals.drawables[i]:draw() -- global class constructor draw override
     end
