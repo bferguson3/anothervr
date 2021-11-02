@@ -52,6 +52,7 @@ local function initialize_shaders()
     defaultShader:send('specularStrength', 0.5)
     defaultShader:send('metallic', 32.0)
 
+-- START DELETEME CODE ----
     -- Make a list of all tile transforms:
     tile_floor_loc = {}
     tile_wall_loc = {}
@@ -85,6 +86,9 @@ local function initialize_shaders()
         { tileLocs = { 'mat4', 20*20 } }, 
         { usage = 'static' })
     ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
+
+-- END DELETEME CODE 
+
 
     -- Make a new shader with a defined block space, and push the block to shader
     tileShader = gfx.newShader(
@@ -144,7 +148,7 @@ function lovr.draw()
     --blockmodel:draw(m.mat4(), 20*20)     
     tileShader:sendBlock('TileTransforms', floor_transform_block)
     local tex = gfx.newTexture('models/tex_02.png', { mipmaps = false })
-    globals.shaders.tile:send('lovrDiffuseTexture', tex)
+    globals.shaders.tile:send('tileTexture', tex)
     blockmodel:draw(m.mat4(), 20*20) 
     --tileShader:sendBlock('TileTransforms', ceiling_transform_block)
     --blockmodel:draw(m.mat4(), 20*20) 

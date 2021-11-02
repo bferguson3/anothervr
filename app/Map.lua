@@ -3,8 +3,11 @@ local _MAPWIDTH = 20
 local _MAPHEIGHT = 20
 
 local lovr = require 'lovr'
+local m = lovr.math 
 local fs = lovr.filesystem 
+local gfx = lovr.graphics 
 local Tile = require 'Tile'
+local TileGroup = require 'TileGroup'
 
 local Map = {}
 Map.tiles = {}
@@ -15,21 +18,6 @@ Map.tileGroups = {
 --    table.insert(Map.tiles, Tile:new())
 --end
 local map_mt = { __index = Map }
-
---1. Split the map layer into arrays of each block TYPE. e.g. all the grass blocks (02)
---  in one array, all the door blocks (06) in another, etc.
-    
---2. Assign their transform locations into each of the type subsections, and label-
---  the resultant coverall object 'tileGroup' with the 'tileId'
-
---3. When initializing the Map, we have to also populate the mat4() transformations
--- that we will be sending to the shader. iterate through all tileGroups and 
--- make an additional container for the mat4s. all these blocks are the same so
--- the order they are drawn in doesn't matter. 
-
---4. During Map:draw() from drawables[n]:draw():
---  iterate through tileGroups[], setting texture once, sending the block
---  of transforms, and finally drawing with :(mat4(), #thistilegroup)
 
 
 function Map:init()
@@ -43,9 +31,7 @@ function Map:init()
     local tileGroups = {}
     -- make groups 
     for i=1,#groups do 
-        local o = {}
-        o.type = groups[i] 
-        o.tiles = {}
+        local o = TileGroup:new(groups[i], {}, {})
         table.insert(tileGroups, o)
     end
     -- make tile groups 
@@ -58,7 +44,7 @@ function Map:init()
         end
     end
     self.tileGroups = tileGroups
-    -- debug:
+-- debug:
     --for i=1,#self.tileGroups do 
     --    for j=1,#self.tileGroups[i] do 
     --        lovr.filesystem.append('log5.txt', i .. ' ' .. j .. ' ' 
@@ -66,15 +52,34 @@ function Map:init()
     --            .. ')  x: ' .. self.tileGroups[i][j].x .. '  z: ' .. self.tileGroups[i][j].z .. '\n')
     --    end
     --end
+    for i = 1, #self.tileGroups do 
+        for j = 1, #self.tileGroups[i] do 
+            local t = self.tileGroups[i][j] 
+            local orientation = m.quat(0, 0, 1, 0)
+            local scale = m.vec3(1.5) 
+            local position = m.vec3(t.x, -2, t.z)
+            -- use 'newMat4' to save it for later 
+            --t.transform = m.newMat4(position, scale, orientation)
+            table.insert(tileGroups[i].transforms, m.newMat4(position, scale, orientation))
+        end
+    end
+    -- TODO: finish this
+    -- now for each tile group, make a new 'tiletransformblock' object which contains:
+    local new_sblock = gfx.newShaderBlock('uniform', 
+        { 
+          tileLocs = { 'mat4', #tileGroups[1] }, 
+          tileTexture = { 'sampler2D', 1 } 
+        },
+        { usage = 'static' }) 
+    new_sblock:send('tileLocs', tileGroups[1].transforms)
+    -- now, we need to populate the TileGroup's texture based on its type. 
+    new_sblock:send('tileTexture', tileGroups[1].texture)
+    
     -- done with tiles. force clean.
     self.tiles = nil 
 end
 
 function Map:draw()
-    for i=1,#self.tiles do 
-        --lovr.graphics.setColor(0.5, 1, 1, 1)
-        self.tiles[i]:draw()
-    end 
 end
 
 
