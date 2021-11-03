@@ -68,12 +68,12 @@ function Map:init()
     local new_sblock = gfx.newShaderBlock('uniform', 
         { 
           tileLocs = { 'mat4', #tileGroups[1] }, 
-          tileTexture = { 'sampler2D', 1 } 
+          --tileTexture = { 'sampler2D', 1 } 
         },
         { usage = 'static' }) 
     new_sblock:send('tileLocs', tileGroups[1].transforms)
     -- now, we need to populate the TileGroup's texture based on its type. 
-    new_sblock:send('tileTexture', tileGroups[1].texture)
+    --new_sblock:send('tileTexture', tileGroups[1].texture)
     
     -- done with tiles. force clean.
     self.tiles = nil 

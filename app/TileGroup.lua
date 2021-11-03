@@ -22,7 +22,11 @@ function TileGroup:new(id, tiles, transforms) --
         fn = fn .. '0'
     end
     fn = fn .. id .. '.png'
-    o.texture = gfx.newTexture(fn, { mipmaps = false })
+    if lovr.filesystem.isFile(fn) then 
+        o.texture = gfx.newTexture(fn, { mipmaps = false })
+    else
+        o.texture = gfx.newTexture('models/tex_01.png', { mipmaps = false })
+    end 
     
     setmetatable(o, TileGroup_mt) 
     return o 
