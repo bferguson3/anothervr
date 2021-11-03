@@ -51,7 +51,7 @@ local function initialize_shaders()
     defaultShader:send('ambience', ambientLight)
     defaultShader:send('specularStrength', 0.5)
     defaultShader:send('metallic', 32.0)
-
+    
 -- START DELETEME CODE ----
     -- Make a list of all tile transforms:
     --tile_floor_loc = {}
@@ -143,17 +143,14 @@ function lovr.draw()
     gfx.setColor(WHITE)
 
     -- Draw 'TileMap'
-    gfx.setShader(tileShader) -- includes teal color
-    --tileShader:sendBlock('TileTransforms', wall_transform_block)
-    --blockmodel:draw(m.mat4(), 20*20)
+    gfx.setShader(tileShader) 
+    -- Finish me
     floor_transform_block:send('tileLocs', map1.tileGroups[1].transforms)
     tileShader:sendBlock('TileTransforms', floor_transform_block)
     local tex = gfx.newTexture('models/tex_02.png', { mipmaps = false })
     globals.shaders.tile:send('tileTexture', tex)
     blockmodel:draw(m.mat4(), #map1.tileGroups[1].transforms) -- 20*20) 
-    --tileShader:sendBlock('TileTransforms', ceiling_transform_block)
-    --blockmodel:draw(m.mat4(), 20*20) 
-
+    
     gfx.push()
     for i=1,#globals.drawables do 
         globals.drawables[i]:draw() -- global class constructor draw override
