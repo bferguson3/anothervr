@@ -57,7 +57,7 @@ function Map:init()
             local t = self.tileGroups[i][j] 
             local orientation = m.quat(0, 0, 1, 0)
             local scale = m.vec3(1.5) 
-            local position = m.vec3(t.x, -2, t.z)
+            local position = m.vec3(t.x * 3, -2, t.z * 3)
             -- use 'newMat4' to save it for later 
             --t.transform = m.newMat4(position, scale, orientation)
             table.insert(tileGroups[i].transforms, m.newMat4(position, scale, orientation))
@@ -66,10 +66,7 @@ function Map:init()
     -- TODO: finish this
     -- now for each tile group, make a new 'tiletransformblock' object which contains:
     local new_sblock = gfx.newShaderBlock('uniform', 
-        { 
-          tileLocs = { 'mat4', #tileGroups[1] }, 
-          --tileTexture = { 'sampler2D', 1 } 
-        },
+        { tileLocs = { 'mat4', #tileGroups[1] } },
         { usage = 'static' }) 
     new_sblock:send('tileLocs', tileGroups[1].transforms)
     -- now, we need to populate the TileGroup's texture based on its type. 
@@ -80,6 +77,7 @@ function Map:init()
 end
 
 function Map:draw()
+
 end
 
 

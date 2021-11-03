@@ -29,7 +29,7 @@ local FRAMERATE = 72
 local defaultVertex, defaultFragment, defaultShader
 local tileShader, blockmodel
 local floor_transform_block, wall_transform_block, ceiling_transform_block
-local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
+--local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
 -- Currently the skybox renders at the same color as ambience.
 local ambientLight = DARKGREY 
 
@@ -54,38 +54,38 @@ local function initialize_shaders()
 
 -- START DELETEME CODE ----
     -- Make a list of all tile transforms:
-    tile_floor_loc = {}
-    tile_wall_loc = {}
-    tile_ceiling_loc = {}
-    for y=1,20 do 
-        for x = 1,20 do 
-            local position = m.vec3((x - 11)*3, 2, (y - 11)*3)
-            local pos2 = m.vec3((x - 11)*3, -2, (y - 11)*3)
-            local pos3 = m.vec3((x - 11)*3, 6, (y - 11)*3)
-            local orientation = m.quat(0, 0, 1, 0)
-            local scale = m.vec3(1.5) 
-            -- note 'newMat4' instead of 'mat4' to store it for later.
-            tile_floor_loc[((y-1)*20) + x] = m.newMat4(pos2, scale, orientation)
-            tile_wall_loc[((y-1)*20) + x] = m.newMat4(position, scale, orientation)
-            tile_ceiling_loc[((y-1)*20) + x] = m.newMat4(pos3, scale, orientation)
-        end
-    end
+    --tile_floor_loc = {}
+    --tile_wall_loc = {}
+    --tile_ceiling_loc = {}
+    --for y=1,20 do 
+    --    for x = 1,20 do 
+    --        local position = m.vec3((x - 11)*3, 2, (y - 11)*3)
+    --        local pos2 = m.vec3((x - 11)*3, -2, (y - 11)*3)
+    --        local pos3 = m.vec3((x - 11)*3, 6, (y - 11)*3)
+    --        local orientation = m.quat(0, 0, 1, 0)
+    --        local scale = m.vec3(1.5) 
+    --         -- note 'newMat4' instead of 'mat4' to store it for later.
+    --         tile_floor_loc[((y-1)*20) + x] = m.newMat4(pos2, scale, orientation)
+    --         tile_wall_loc[((y-1)*20) + x] = m.newMat4(position, scale, orientation)
+    --         tile_ceiling_loc[((y-1)*20) + x] = m.newMat4(pos3, scale, orientation)
+    --     end
+    -- end
     
-    -- Make a shader block for the transforms and push the array:
-    floor_transform_block = gfx.newShaderBlock('uniform', 
-        { tileLocs = { 'mat4', 20*20 } }, 
-        { usage = 'static' })
-    floor_transform_block:send('tileLocs', tile_floor_loc)
+    -- -- Make a shader block for the transforms and push the array:
+     floor_transform_block = gfx.newShaderBlock('uniform', 
+         { tileLocs = { 'mat4', 20*20 } }, 
+         { usage = 'static' })
+     --floor_transform_block:send('tileLocs', tile_floor_loc)
     
-    wall_transform_block = gfx.newShaderBlock('uniform', 
-        { tileLocs = { 'mat4', 20*20 } }, 
-        { usage = 'static' })
-    wall_transform_block:send('tileLocs', tile_wall_loc)
+    -- wall_transform_block = gfx.newShaderBlock('uniform', 
+    --     { tileLocs = { 'mat4', 20*20 } }, 
+    --     { usage = 'static' })
+    -- wall_transform_block:send('tileLocs', tile_wall_loc)
     
-    ceiling_transform_block = gfx.newShaderBlock('uniform', 
-        { tileLocs = { 'mat4', 20*20 } }, 
-        { usage = 'static' })
-    ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
+    -- ceiling_transform_block = gfx.newShaderBlock('uniform', 
+    --     { tileLocs = { 'mat4', 20*20 } }, 
+    --     { usage = 'static' })
+    -- ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
 
 -- END DELETEME CODE 
 
@@ -145,11 +145,12 @@ function lovr.draw()
     -- Draw 'TileMap'
     gfx.setShader(tileShader) -- includes teal color
     --tileShader:sendBlock('TileTransforms', wall_transform_block)
-    --blockmodel:draw(m.mat4(), 20*20)     
+    --blockmodel:draw(m.mat4(), 20*20)
+    floor_transform_block:send('tileLocs', map1.tileGroups[1].transforms)
     tileShader:sendBlock('TileTransforms', floor_transform_block)
     local tex = gfx.newTexture('models/tex_02.png', { mipmaps = false })
     globals.shaders.tile:send('tileTexture', tex)
-    blockmodel:draw(m.mat4(), 20*20) 
+    blockmodel:draw(m.mat4(), #map1.tileGroups[1].transforms) -- 20*20) 
     --tileShader:sendBlock('TileTransforms', ceiling_transform_block)
     --blockmodel:draw(m.mat4(), 20*20) 
 
