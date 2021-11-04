@@ -137,11 +137,13 @@ function lovr.update(dT)
 end
 
 function lovr.draw()
+    -- goto NO_SKYBOX 
     -- skybox
     gfx.setColor(DARKGREY)
     gfx.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
     gfx.setColor(WHITE)
-
+    ::NO_SKYBOX::
+    
     -- Draw 'TileMap'
     gfx.setShader(tileShader) 
     -- Finish me

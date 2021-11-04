@@ -7,15 +7,15 @@ IGNORED_WARNINGS:=611 612 614
 #  then, else and fi do not take a ;, all other lines do. 
 #  the muted echo allows the $shell echoes to be printed.
 default: check
-	@echo $(shell \
+	@echo "$(shell \
 		export ERRS="`grep --only-matching "0 errors" check.log`" ; \
 		if [ "$$ERRS" = "0 errors" ]; then \
 			echo "Build OK! Pushing to device..." ;\
-			make install; \
+			make install ;\
 		else \
 			echo "Build errors detected." ;\
 		fi \
-	)
+	)"
 	 
 # Perform main linter operation on all local lua files. 
 #   '-' tells Make to ignore fails.

@@ -19,6 +19,19 @@ Map.tileGroups = {
 --end
 local map_mt = { __index = Map }
 
+function Map:populate_tile_transforms()
+    for i = 1, #self.tileGroups do 
+        for j = 1, #self.tileGroups[i] do 
+            local t = self.tileGroups[i][j] 
+            local orientation = m.quat(0, 0, 1, 0)
+            local scale = m.vec3(1.5) 
+            local position = m.vec3(t.x * 3, -2, t.z * 3)
+            -- use 'newMat4' to save it for later 
+            --t.transform = m.newMat4(position, scale, orientation)
+            table.insert(self.tileGroups[i].transforms, m.newMat4(position, scale, orientation))
+        end
+    end
+end
 
 function Map:init()
     local groups = {}
@@ -42,7 +55,7 @@ function Map:init()
                 n = #tileGroups 
             end
         end
-    end
+    end 
     self.tileGroups = tileGroups
 -- debug:
     --for i=1,#self.tileGroups do 
@@ -52,17 +65,7 @@ function Map:init()
     --            .. ')  x: ' .. self.tileGroups[i][j].x .. '  z: ' .. self.tileGroups[i][j].z .. '\n')
     --    end
     --end
-    for i = 1, #self.tileGroups do 
-        for j = 1, #self.tileGroups[i] do 
-            local t = self.tileGroups[i][j] 
-            local orientation = m.quat(0, 0, 1, 0)
-            local scale = m.vec3(1.5) 
-            local position = m.vec3(t.x * 3, -2, t.z * 3)
-            -- use 'newMat4' to save it for later 
-            --t.transform = m.newMat4(position, scale, orientation)
-            table.insert(tileGroups[i].transforms, m.newMat4(position, scale, orientation))
-        end
-    end
+    self:populate_tile_transforms()
     -- TODO: finish this
     -- now for each tile group, make a new 'tiletransformblock' object which contains:
     local new_sblock = gfx.newShaderBlock('uniform', 
