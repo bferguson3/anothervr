@@ -27,7 +27,7 @@ local DARKGREY = {0.33, 0.33, 0.33, 1.0}
 local FRAMERATE = 72
 
 local defaultVertex, defaultFragment, defaultShader
-local tileShader, blockmodel
+local tileShader --, blockmodel
 local floor_transform_block, wall_transform_block, ceiling_transform_block
 --local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
 -- Currently the skybox renders at the same color as ambience.
@@ -116,7 +116,7 @@ function lovr.load(args)
     map1:init() -- < loads map and override to drawables
 
     -- load the cube model 
-    blockmodel = gfx.newModel('models/block_02.obj')
+    --blockmodel = gfx.newModel('models/block_02.obj')
     
 end
 
@@ -143,15 +143,6 @@ function lovr.draw()
     gfx.box('fill', 0, 0, 0, 50, 50, 50, 0, 0, 1, 0)
     gfx.setColor(WHITE)
     ::NO_SKYBOX::
-    
-    -- Draw 'TileMap'
-    gfx.setShader(tileShader) 
-    -- Finish me
-    floor_transform_block:send('tileLocs', map1.tileGroups[1].transforms)
-    tileShader:sendBlock('TileTransforms', floor_transform_block)
-    local tex = gfx.newTexture('models/tex_02.png', { mipmaps = false })
-    globals.shaders.tile:send('tileTexture', tex)
-    blockmodel:draw(m.mat4(), #map1.tileGroups[1].transforms) -- 20*20) 
     
     gfx.push()
     for i=1,#globals.drawables do 

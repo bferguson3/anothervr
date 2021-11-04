@@ -8,6 +8,7 @@ local fs = lovr.filesystem
 local gfx = lovr.graphics 
 local Tile = require 'Tile'
 local TileGroup = require 'TileGroup'
+local globals = require 'globals'
 
 local Map = {}
 Map.tiles = {}
@@ -57,30 +58,30 @@ function Map:init()
         end
     end 
     self.tileGroups = tileGroups
--- debug:
-    --for i=1,#self.tileGroups do 
-    --    for j=1,#self.tileGroups[i] do 
-    --        lovr.filesystem.append('log5.txt', i .. ' ' .. j .. ' ' 
-    --            .. self.tileGroups[i].type .. '(' .. self.tileGroups[i][j].type 
-    --            .. ')  x: ' .. self.tileGroups[i][j].x .. '  z: ' .. self.tileGroups[i][j].z .. '\n')
-    --    end
-    --end
+    -- populate transforms arrays
     self:populate_tile_transforms()
-    -- TODO: finish this
-    -- now for each tile group, make a new 'tiletransformblock' object which contains:
-    local new_sblock = gfx.newShaderBlock('uniform', 
-        { tileLocs = { 'mat4', #tileGroups[1] } },
+    -- remaining: create my own shader
+    self.tileTransformBlock = gfx.newShaderBlock('uniform', 
+        { tileLocs = { 'mat4', #self.tileGroups[1].transforms } },
         { usage = 'static' }) 
-    new_sblock:send('tileLocs', tileGroups[1].transforms)
-    -- now, we need to populate the TileGroup's texture based on its type. 
-    --new_sblock:send('tileTexture', tileGroups[1].texture)
+    self.myShader = gfx.newShader(
+        self.tileTransformBlock:getShaderCode('TileTransforms') .. 
+        fs.read('shaders/tileVertex.vs'), 
+        fs.read('shaders/tileFragment.fs'));
+    self.tileTransformBlock:send('tileLocs', self.tileGroups[1].transforms)
+    self.myShader:sendBlock('TileTransforms', self.tileTransformBlock)
+    self.myShader:send('tileTexture', gfx.newTexture('models/tex_02.png'))
+    self.blockmodel = gfx.newModel('models/block_02.obj')
     
-    -- done with tiles. force clean.
+        -- done with tiles. force clean.
     self.tiles = nil 
+
+    table.insert(globals.drawables, self)
 end
 
 function Map:draw()
-
+    gfx.setShader(self.myShader)
+    self.blockmodel:draw(m.mat4(), #self.tileGroups[1].transforms)
 end
 
 

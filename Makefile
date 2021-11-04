@@ -8,8 +8,8 @@ IGNORED_WARNINGS:=611 612 614
 #  the muted echo allows the $shell echoes to be printed.
 default: check
 	@echo "$(shell \
-		export ERRS="`grep --only-matching "0 errors" check.log`" ; \
-		if [ "$$ERRS" = "0 errors" ]; then \
+		export NOERRS="`grep --only-matching "0 errors" check.log`" ; \
+		if [ "$$NOERRS" = "0 errors" ]; then \
 			echo "Build OK! Pushing to device..." ;\
 			make install ;\
 		else \
