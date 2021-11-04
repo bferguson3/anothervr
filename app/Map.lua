@@ -62,18 +62,16 @@ function Map:init()
     self:populate_tile_transforms()
     -- remaining: create my own shader
     self.tileTransformBlock = gfx.newShaderBlock('uniform', 
-        { tileLocs = { 'mat4', #self.tileGroups[1].transforms } },
-        { usage = 'static' }) 
+        { tileLocs = { 'mat4', 20*20 } }, --#self.tileGroups[1].transforms } },
+        { usage = 'dynamic' }) 
     self.myShader = gfx.newShader(
         self.tileTransformBlock:getShaderCode('TileTransforms') .. 
         fs.read('shaders/tileVertex.vs'), 
         fs.read('shaders/tileFragment.fs'));
-    self.tileTransformBlock:send('tileLocs', self.tileGroups[1].transforms)
-    self.myShader:sendBlock('TileTransforms', self.tileTransformBlock)
-    self.myShader:send('tileTexture', gfx.newTexture('models/tex_02.png'))
     self.blockmodel = gfx.newModel('models/block_02.obj')
-    
-        -- done with tiles. force clean.
+    --self.myShader:send('tileTexture', gfx.newTexture('models/tex_02.png'))
+        
+    -- done with tiles. force clean.
     self.tiles = nil 
 
     table.insert(globals.drawables, self)
@@ -81,7 +79,12 @@ end
 
 function Map:draw()
     gfx.setShader(self.myShader)
-    self.blockmodel:draw(m.mat4(), #self.tileGroups[1].transforms)
+    for i=1,#self.tileGroups do 
+        self.myShader:send('tileTexture', self.tileGroups[i].texture)
+        self.tileTransformBlock:send('tileLocs', self.tileGroups[i].transforms)
+        self.myShader:sendBlock('TileTransforms', self.tileTransformBlock)
+        self.blockmodel:draw(m.mat4(), #self.tileGroups[i].transforms)
+    end
 end
 
 
