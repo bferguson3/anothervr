@@ -27,6 +27,8 @@ check:
 	@echo Luacheck finished. 
 	@echo ---
 
+local: check
+	/Applications/LÖVR.app/Contents/MacOS/lovr ./app/. mirror 
 # Push the app to the device.
 install:
 	adb push --sync ./app/. /sdcard/Android/data/org.lovr.app/files
@@ -35,3 +37,4 @@ install:
 clean:
 	rm -rf check.log 
 	adb shell rm -rf /sdcard/Android/data/org.lovr.app
+

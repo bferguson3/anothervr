@@ -60,8 +60,16 @@ local function initialize_shaders()
     globals.shaders.tile = ts;
 end
 
-function lovr.load(args)
+local LOCALMODE = false
 
+function lovr.load(args)
+    if #args > 0 then 
+        if args[1] == 'mirror' then 
+            LOCALMODE = true
+        end 
+    end
+    print (LOCALMODE)
+    
     gfx.setDefaultFilter('nearest', gfx.getLimits().anisotropy)
     initialize_shaders()
 
@@ -115,7 +123,6 @@ function lovr.draw()
     gfx.setShader() 
     gfx.setColor(WHITE)
     --gfx.print('hello world', 0, 2, -3, .5)
-    gfx.print('map1 is ' .. #map1.tiles .. 'tiles large!', 0, 2, -3, .5)
     gfx.print("size of drawables: " .. #globals.drawables, 0, 0, -3, 0.4)
     gfx.print('GPU FPS: ' .. lovr.timer.getFPS(), 0, 0.5, -3, 0.2)
 
