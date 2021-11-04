@@ -27,9 +27,6 @@ local DARKGREY = {0.33, 0.33, 0.33, 1.0}
 local FRAMERATE = 72
 
 local defaultVertex, defaultFragment, defaultShader
-local tileShader --, blockmodel
-local floor_transform_block, wall_transform_block, ceiling_transform_block
---local tile_floor_loc, tile_wall_loc, tile_ceiling_loc
 -- Currently the skybox renders at the same color as ambience.
 local ambientLight = DARKGREY 
 
@@ -51,52 +48,16 @@ local function initialize_shaders()
     defaultShader:send('ambience', ambientLight)
     defaultShader:send('specularStrength', 0.5)
     defaultShader:send('metallic', 32.0)
-    
--- START DELETEME CODE ----
-    -- Make a list of all tile transforms:
-    --tile_floor_loc = {}
-    --tile_wall_loc = {}
-    --tile_ceiling_loc = {}
-    --for y=1,20 do 
-    --    for x = 1,20 do 
-    --        local position = m.vec3((x - 11)*3, 2, (y - 11)*3)
-    --        local pos2 = m.vec3((x - 11)*3, -2, (y - 11)*3)
-    --        local pos3 = m.vec3((x - 11)*3, 6, (y - 11)*3)
-    --        local orientation = m.quat(0, 0, 1, 0)
-    --        local scale = m.vec3(1.5) 
-    --         -- note 'newMat4' instead of 'mat4' to store it for later.
-    --         tile_floor_loc[((y-1)*20) + x] = m.newMat4(pos2, scale, orientation)
-    --         tile_wall_loc[((y-1)*20) + x] = m.newMat4(position, scale, orientation)
-    --         tile_ceiling_loc[((y-1)*20) + x] = m.newMat4(pos3, scale, orientation)
-    --     end
-    -- end
-    
-    -- -- Make a shader block for the transforms and push the array:
-     floor_transform_block = gfx.newShaderBlock('uniform', 
-         { tileLocs = { 'mat4', 20*20 } }, 
-         { usage = 'static' })
-     --floor_transform_block:send('tileLocs', tile_floor_loc)
-    
-    -- wall_transform_block = gfx.newShaderBlock('uniform', 
-    --     { tileLocs = { 'mat4', 20*20 } }, 
-    --     { usage = 'static' })
-    -- wall_transform_block:send('tileLocs', tile_wall_loc)
-    
-    -- ceiling_transform_block = gfx.newShaderBlock('uniform', 
-    --     { tileLocs = { 'mat4', 20*20 } }, 
-    --     { usage = 'static' })
-    -- ceiling_transform_block:send('tileLocs', tile_ceiling_loc)
 
--- END DELETEME CODE 
-
-
-    -- Make a new shader with a defined block space, and push the block to shader
-    tileShader = gfx.newShader(
-        floor_transform_block:getShaderCode('TileTransforms') .. 
+    local tileTransformBlock_tmp = gfx.newShaderBlock('uniform', 
+        { tileLocs = { 'mat4', 20*20 } }, 
+        { usage = 'dynamic' }) 
+    local ts = gfx.newShader(
+        tileTransformBlock_tmp:getShaderCode('TileTransforms') .. 
         fs.read('shaders/tileVertex.vs'), 
-        fs.read('shaders/tileFragment.fs'));
-    globals.shaders.tile = tileShader 
---
+        fs.read('shaders/tileFragment.fs')
+    );
+    globals.shaders.tile = ts;
 end
 
 function lovr.load(args)
