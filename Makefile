@@ -1,4 +1,5 @@
 # anothervr Makefile
+# ! Expects all LOVR game code to be in ./app/
 
 # Ignore whitespace warnings:
 IGNORED_WARNINGS:=611 612 614
@@ -29,6 +30,7 @@ check:
 
 local: check
 	/Applications/LÖVR.app/Contents/MacOS/lovr ./app/. mirror 
+	
 # Push the app to the device.
 install:
 	adb push --sync ./app/. /sdcard/Android/data/org.lovr.app/files
